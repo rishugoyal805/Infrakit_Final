@@ -1,0 +1,9 @@
+{
+  "name": "@infrakit/queue",
+  "version": "0.1.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "better-sqlite3": "^11.3.0"
+  }
+}

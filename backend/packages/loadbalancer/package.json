@@ -1,0 +1,31 @@
+{
+  "name": "smart-stick-loadbalancer",
+  "version": "1.1.4",
+  "description": "A lightweight sticky-session load balancer for Node.js with health checks and optional email alerts.",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js"
+  },
+  "keywords": [
+    "load-balancer",
+    "sticky-session",
+    "proxy",
+    "nodejs",
+    "http-proxy",
+    "health-check"
+  ],
+  "author": "Swayam Gupta",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.18.1",
+    "cookie-parser": "^1.4.7",
+    "express": "^5.1.0",
+    "http-proxy-middleware": "^3.0.5",
+    "nodemailer": "^9.0.3",
+    "socket.io": "^4.8.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SwayamGupta12345/smart-stick-loadbalancer.git"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "name": "infrakit-visual-editor-backend",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "node src/server.js",
+    "start": "node src/server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "better-sqlite3": "^11.3.0",
+    "bcrypt": "^5.1.1",
+    "jsonwebtoken": "^9.0.2",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "archiver": "^7.0.1",
+    "dotenv": "^16.4.5",
+    "crypto-random-string": "^5.0.0"
+  }
+}

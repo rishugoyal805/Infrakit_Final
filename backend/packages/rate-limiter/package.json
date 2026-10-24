@@ -1,0 +1,7 @@
+{
+  "name": "@infrakit/rate-limiter",
+  "version": "0.1.0",
+  "main": "index.js",
+  "license": "MIT",
+  "description": "Sliding window rate limiter — standalone or core-connected"
+}

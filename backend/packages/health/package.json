@@ -1,0 +1,12 @@
+{
+  "name": "@infrakit/health",
+  "version": "0.1.0",
+  "main": "index.js",
+  "license": "MIT",
+  "peerDependencies": {
+    "express": ">=4.0.0"
+  },
+  "peerDependenciesMeta": {
+    "express": { "optional": true }
+  }
+}

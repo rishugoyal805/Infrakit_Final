@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head><%- include('partials/head') %><title><%= tableConfig.label %> — InfraKit</title></head>
+<body class="bg-bg text-gray-200 flex">
+  <%- include('partials/nav') %>
+  <main class="flex-1 p-8 overflow-x-auto">
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-xl font-semibold"><%= tableConfig.icon %> <%= tableConfig.label %></h2>
+      <span class="text-sm text-muted"><%= total %> total rows</span>
+    </div>
+
+    <% if (columns.length > 0) { %>
+    <form method="GET" class="bg-panel border border-border rounded-lg p-3 mb-4 flex flex-wrap gap-2 items-end">
+      <% columns.forEach(function(col) { %>
+        <div>
+          <label class="block text-xs text-muted mb-1"><%= col %></label>
+          <input type="text" name="<%= col %>" value="<%= filters[col] || '' %>"
+                 class="bg-bg border border-border rounded px-2 py-1 text-sm w-32 focus:outline-none focus:border-blue-500">
+        </div>
+      <% }); %>
+      <button class="bg-blue-600 hover:bg-blue-500 text-white text-sm px-4 py-1.5 rounded h-8">Filter</button>
+      <a href="<%= basePath %>/tables/<%= tableConfig.name %>" class="text-xs text-muted hover:text-white h-8 flex items-center px-2">Clear</a>
+    </form>
+    <% } %>
+
+    <div class="bg-panel border border-border rounded-lg overflow-hidden">
+      <table class="w-full text-xs">
+        <thead class="bg-white/5 text-muted uppercase">
+          <tr>
+            <% columns.forEach(function(col) { %>
+              <%
+                const nextDir = (sortColumn === col && sortDir === 'ASC') ? 'DESC' : 'ASC';
+                const qs = new URLSearchParams({ ...filters, sort: col, dir: nextDir }).toString();
+              %>
+              <th class="text-left px-3 py-2 whitespace-nowrap">
+                <a href="<%= basePath %>/tables/<%= tableConfig.name %>?<%= qs %>" class="hover:text-white flex items-center gap-1">
+                  <%= col %>
+                  <% if (sortColumn === col) { %><span><%= sortDir === 'ASC' ? '▲' : '▼' %></span><% } %>
+                </a>
+              </th>
+            <% }); %>
+          </tr>
+        </thead>
+        <tbody>
+          <% rows.forEach(function(row) { %>
+            <tr class="border-t border-border hover:bg-white/5">
+              <% columns.forEach(function(col) { %>
+                <td class="px-3 py-2 font-mono whitespace-nowrap max-w-xs truncate" title="<%= row[col] %>">
+                  <%= row[col] === null ? '—' : row[col] %>
+                </td>
+              <% }); %>
+            </tr>
+          <% }); %>
+          <% if (rows.length === 0) { %>
+            <tr><td colspan="<%= columns.length || 1 %>" class="px-3 py-4 text-muted text-center">No rows match.</td></tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+
+    <% if (totalPages > 1) { %>
+    <div class="flex items-center gap-2 mt-4 text-sm">
+      <% for (let p = 1; p <= totalPages; p++) { %>
+        <%
+          const pageQs = new URLSearchParams({ ...filters, sort: sortColumn, dir: sortDir, page: p }).toString();
+        %>
+        <a href="<%= basePath %>/tables/<%= tableConfig.name %>?<%= pageQs %>"
+           class="px-3 py-1 rounded <%= p === page ? 'bg-blue-600 text-white' : 'bg-panel border border-border text-muted hover:text-white' %>">
+          <%= p %>
+        </a>
+      <% } %>
+    </div>
+    <% } %>
+  </main>
+</body>
+</html>
