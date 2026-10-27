@@ -78,7 +78,7 @@ export default function Dashboard({ user, onLogout }) {
             </span>
             <button
               onClick={logout}
-              className="rounded-md border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-600 transition hover:border-slate-300 hover:text-[#151515]"
+              className="rounded-md border hover:cursor-pointer border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-600 transition hover:border-slate-300 hover:text-[#151515]"
             >
               Log out
             </button>
@@ -132,7 +132,7 @@ export default function Dashboard({ user, onLogout }) {
             <button
               type="submit"
               disabled={creating || !newName.trim()}
-              className="rounded-md bg-[#151515] px-6 py-3.5 text-sm font-bold text-white transition hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-40"
+              className="rounded-md hover:cursor-pointer bg-[#151515] px-6 py-3.5 text-sm font-bold text-white transition hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-40"
             >
               {creating ? "Creating…" : "New project →"}
             </button>
@@ -206,7 +206,7 @@ export default function Dashboard({ user, onLogout }) {
 
                   <button
                     onClick={() => remove(p.id)}
-                    className="absolute right-4 top-4 rounded-md p-1.5 text-slate-300 opacity-0 transition hover:bg-red-50 hover:text-red-500 group-hover:opacity-100 focus:opacity-100"
+                    className="absolute hover:cursor-pointer right-4 top-4 rounded-md p-1.5 text-slate-300 opacity-0 transition hover:bg-red-50 hover:text-red-500 group-hover:opacity-100 focus:opacity-100"
                     title="Delete project"
                     aria-label={`Delete ${p.name}`}
                   >

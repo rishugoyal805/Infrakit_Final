@@ -329,7 +329,7 @@ export default function Editor() {
         <div className="flex gap-2">
           <button
             onClick={save}
-            className={`rounded-[8px] border px-4 py-2 text-[13px] font-medium transition-all duration-150 ${
+            className={`rounded-[8px] border px-4 py-2 text-[13px] font-medium transition-all duration-150 hover:cursor-pointer ${
               saveState === "saved"
                 ? "border-[#bbe5c3] bg-[#f0faf2] text-[#1a7f37]"
                 : "border-[#333338] bg-white text-[#333338] hover:bg-[#333338] hover:text-white hover:border-[#333338] hover:shadow-[0_2px_6px_rgba(0,0,0,0.18)] active:shadow-none"
@@ -350,7 +350,7 @@ export default function Editor() {
                 : ""
             }
             className="
-              rounded-[8px] border border-[#333338] bg-white px-4 py-2 text-[13px] font-medium text-[#333338] transition-all duration-150 hover:bg-[#333338] hover:text-white hover:border-[#333338] hover:shadow-[0_2px_6px_rgba(0,0,0,0.18)] active:shadow-none disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-white disabled:hover:text-[#333338] disabled:hover:border-[#333338] disabled:hover:shadow-none "
+              rounded-[8px] border border-[#333338] bg-white px-4 py-2 text-[13px] font-medium text-[#333338] transition-all duration-150 hover:cursor-pointer hover:bg-[#333338] hover:text-white hover:border-[#333338] hover:shadow-[0_2px_6px_rgba(0,0,0,0.18)] active:shadow-none disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-white disabled:hover:text-[#333338] disabled:hover:border-[#333338] disabled:hover:shadow-none "
           >
             {exportLoading ? "Preparing…" : "Export"}
           </button>
@@ -359,40 +359,65 @@ export default function Editor() {
 
       <div className="relative flex flex-1 overflow-hidden">
         <div
-          className="flex shrink-0 flex-col overflow-y-auto border-r border-border bg-white"
+          className="flex h-full min-h-0 shrink-0 flex-col overflow-hidden border-r border-border bg-white"
           style={{ width: `${sidebarWidth}px` }}
         >
-          <ComponentPalette catalog={catalog} provider={provider} />
+          {/* Search/header stays fixed; only the component list should scroll */}
+          <div className="min-h-0 flex-1 overflow-hidden">
+            <ComponentPalette catalog={catalog} provider={provider} />
+          </div>
 
-          {false && (
-            <div className="border-t border-border p-3">
-              <label className="flex items-center gap-2 text-[12.5px] font-medium text-ink">
+          {/* Dashboard stays fixed at the bottom */}
+
+          {/* Dashboard stays fixed at the bottom */}
+          <div className="shrink-0 border-t border-border bg-white p-3">
+            <div className="rounded-xl border border-border bg-[#fafafa] p-3">
+              <label className="flex cursor-pointer items-center gap-2.5">
                 <input
                   type="checkbox"
+                  className="h-4 w-4 shrink-0 cursor-pointer accent-[#333338] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#333338] focus-visible:ring-offset-2"
                   checked={dashboardEnabled}
                   onChange={(e) => setDashboardEnabled(e.target.checked)}
                 />
-                <span>Enable Dashboard</span>
+
+                <span className="text-[13px] font-semibold text-ink">
+                  Enable Dashboard
+                </span>
+
+                <span
+                  className={`ml-auto rounded-full px-2 py-0.5 text-[10px] font-semibold ${
+                    dashboardEnabled
+                      ? "bg-[#eaf7ed] text-[#237a3b]"
+                      : "bg-[#eeeeF1] text-[#66666f]"
+                  }`}
+                >
+                  {dashboardEnabled ? "Enabled" : "Optional"}
+                </span>
               </label>
-              <p className="mt-2 text-[11px] leading-snug text-ink-soft">
-                Dashboard visualizes the whole app — it's not a wired component.
-                Turning this on pulls in{" "}
-                <code className="rounded bg-[#f2f2f4] px-1 font-mono text-[10.5px]">
+
+              <p className="mt-2.5 text-[11px] leading-[1.6] text-ink-soft">
+                Visualize your application with a dashboard. Enabling it
+                includes{" "}
+                <code className="break-all rounded bg-white px-1 py-0.5 font-mono text-[10px] text-ink">
                   @infrakit/core
                 </code>{" "}
-                automatically and adds the signed-token dashboard-auth files to
-                your export.
+                and the dashboard authentication files in your export.
               </p>
+
               {dashboardEnabled && (
                 <button
+                  type="button"
                   onClick={() => setShowAccessModal(true)}
-                  className="mt-2.5 w-full rounded-[7px] border border-border bg-white py-2 text-[12px] font-semibold text-ink hover:bg-[#f7f7f8]"
+                  className="mt-2 flex min-h-9 w-full items-center justify-center gap-2 rounded-lg border border-[#333338] bg-white px-2.5 py-2 text-center text-[11.5px] font-semibold text-[#333338] transition-colors hover:cursor-pointer hover:bg-[#333338] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#333338] focus-visible:ring-offset-2"
                 >
-                  View / Reset Dashboard Access →
+                  <span className="text-[12.5px]">View / Reset Dashboard Access</span>
+                  <span aria-hidden="true" className="text-sm">
+                    →
+                  </span>
                 </button>
               )}
             </div>
-          )}
+          </div>
         </div>
 
         {showAccessModal && (
@@ -489,7 +514,6 @@ export default function Editor() {
     </div>
   );
 }
-
 
 // import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 // import { useParams, Link } from "react-router-dom";

@@ -11,7 +11,7 @@ export default function ProviderSelector({ provider, onChange }) {
             role="tab"
             aria-selected={active}
             onClick={() => onChange(p.id)}
-            className={`flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-[12.5px] font-medium transition-colors ${
+            className={`flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-[12.5px] font-medium transition-colors hover:cursor-pointer ${
               active ? "bg-white text-ink shadow-sm" : "text-ink-soft hover:text-ink"
             }`}
           >

@@ -504,7 +504,7 @@ export default function ExportPreviewModal({
             onClick={onClose}
             aria-label="Close export preview"
             title="Close"
-            className="flex h-7 w-7 items-center justify-center rounded-md text-[18px] leading-none text-[#57606a] transition-colors hover:bg-[#f6f8fa] hover:text-[#24292f]"
+            className="flex h-7 w-7 hover:cursor-pointer items-center justify-center rounded-md text-[18px] leading-none text-[#57606a] transition-colors hover:bg-[#f6f8fa] hover:text-[#24292f]"
           >
             ×
           </button>
@@ -547,7 +547,7 @@ export default function ExportPreviewModal({
                       </span>
 
                       <span
-                        className={`min-w-0 flex-1 break-words text-[12.5px] leading-[1.4] ${
+                        className={`min-w-0 flex-1 break-words text-[12.5px] leading-[1.4] hover:cursor-pointer ${
                           selected ? "text-white" : "text-[#24292f]"
                         }`}
                       >
@@ -586,7 +586,7 @@ export default function ExportPreviewModal({
 
                 <button
                   onClick={copy}
-                  className="rounded-[7px] border border-[#d0d7de] bg-white px-3 py-1.5 text-[12px] font-medium text-[#24292f] transition-colors duration-150 hover:border-[#afb8c1] hover:bg-[#f6f8fa]"
+                  className="rounded-[7px] hover:cursor-pointer border border-[#d0d7de] bg-white px-3 py-1.5 text-[12px] font-medium text-[#24292f] transition-colors duration-150 hover:border-[#afb8c1] hover:bg-[#f6f8fa]"
                 >
                   {copied ? "Copied" : "Copy"}
                 </button>
@@ -985,7 +985,7 @@ export default function ExportPreviewModal({
           <button
             onClick={onDownload}
             disabled={downloading}
-            className="shrink-0 rounded-[8px] bg-[#24292f] px-5 py-2.5 text-[13px] font-medium text-white transition-colors duration-150 hover:bg-[#1f2328] disabled:cursor-not-allowed disabled:opacity-50"
+            className="shrink-0 rounded-[8px] hover:cursor-pointer bg-[#24292f] px-5 py-2.5 text-[13px] font-medium text-white transition-colors duration-150 hover:bg-[#1f2328] disabled:cursor-not-allowed disabled:opacity-50"
           >
             {downloading ? "Preparing…" : "Download ZIP"}
           </button>

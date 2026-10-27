@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { createPortal } from "react-dom";
 import { api } from "../api.js";
 
 export default function DashboardAccessModal({ projectId, onClose }) {
@@ -9,8 +10,10 @@ export default function DashboardAccessModal({ projectId, onClose }) {
   const [creds, setCreds] = useState(null);
   const [justReset, setJustReset] = useState(null);
 
-  const inputClass = "rounded-md border border-border bg-[#fafafa] px-2.5 py-2 font-mono text-[12px]";
-  const copyBtnClass = "rounded-md border border-border px-3 text-[12px] text-ink hover:bg-[#f5f5f7]";
+  const inputClass =
+    "rounded-md border border-border bg-[#fafafa] px-2.5 py-2 font-mono text-[12px]";
+  const copyBtnClass =
+    "rounded-md border border-border px-3 text-[12px] text-ink hover:cursor-pointer hover:bg-[#f5f5f7]";
   const codeClass = "rounded bg-[#f2f2f4] px-1 py-px font-mono text-[11.5px]";
 
   async function loadCredentials() {
@@ -35,20 +38,30 @@ export default function DashboardAccessModal({ projectId, onClose }) {
       await api.reauth(password);
       await loadCredentials();
     } catch (err) {
-      setError(err.message === "wrong_password" ? "Wrong password." : err.message);
+      setError(
+        err.message === "wrong_password" ? "Wrong password." : err.message,
+      );
     } finally {
       setLoading(false);
     }
   }
 
   async function handleReset() {
-    if (creds?.hasPassword && !confirm("This immediately invalidates the current password. Continue?")) return;
+    if (
+      creds?.hasPassword &&
+      !confirm("This immediately invalidates the current password. Continue?")
+    )
+      return;
     setLoading(true);
     setError("");
     try {
       const result = await api.resetDashboardPassword(projectId);
       setJustReset(result);
-      setCreds({ accessKey: result.accessKey, hasPassword: true, passwordCreatedAt: "just now" });
+      setCreds({
+        accessKey: result.accessKey,
+        hasPassword: true,
+        passwordCreatedAt: "just now",
+      });
     } catch (err) {
       setError(err.message);
     } finally {
@@ -56,17 +69,39 @@ export default function DashboardAccessModal({ projectId, onClose }) {
     }
   }
 
-  return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40" onClick={onClose}>
-      <div className="w-[360px] rounded-xl bg-white p-5 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+  return createPortal(
+    <div
+      className="fixed inset-0 z-[100] flex items-center justify-center overflow-y-auto bg-black/40 p-4 sm:p-6"
+      onClick={onClose}
+    >
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="dashboard-access-title"
+        className="my-auto flex max-h-[calc(100dvh-2rem)] w-full max-w-md flex-col overflow-y-auto rounded-2xl border border-black/5 bg-white p-5 shadow-2xl sm:p-6"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="mb-3 flex items-center justify-between">
-          <h3 className="m-0 text-[15px] font-semibold text-ink">Dashboard Access</h3>
-          <button onClick={onClose} className="text-xl leading-none text-ink-soft hover:text-ink">×</button>
+          <h3
+            id="dashboard-access-title"
+            className="m-0 text-[15px] font-semibold tracking-tight text-ink"
+          >
+            Dashboard Access
+          </h3>
+          <button
+            onClick={onClose}
+            className="text-xl leading-none text-ink-soft hover:text-ink hover:cursor-pointer"
+          >
+            ×
+          </button>
         </div>
 
         {stage === "reauth" && (
-          <form onSubmit={submitReauth} className="flex flex-col gap-2.5">
-            <p className="text-[12.5px] text-ink-soft">Confirm your account password to view or reset dashboard credentials.</p>
+          <form className="flex flex-col gap-4">
+            <p className="text-[12.5px] text-ink-soft">
+              Confirm your account password to view or reset dashboard
+              credentials.
+            </p>
             <input
               type="password"
               placeholder="Your account password"
@@ -77,7 +112,12 @@ export default function DashboardAccessModal({ projectId, onClose }) {
               className="rounded-[7px] border border-border px-2.5 py-2.5 text-[13px] focus:border-ink focus:outline-none"
             />
             {error && <p className="text-[13px] text-red-700">{error}</p>}
-            <button type="submit" disabled={loading} className="rounded-[7px] bg-ink py-2.5 text-[13px] font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50">
+            <button
+              type="submit"
+              onClick={submitReauth}
+              disabled={loading || !password.trim()}
+              className="flex min-h-10 w-full border border-border items-center justify-center rounded-lg bg-ink px-4 py-2.5 text-[13px] font-semibold text-black transition-colors hover:bg-[#333338] hover:text-white hover:cursor-pointer hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+            >
               {loading ? "Checking…" : "Confirm"}
             </button>
           </form>
@@ -88,13 +128,24 @@ export default function DashboardAccessModal({ projectId, onClose }) {
             <label className="flex flex-col gap-1.5 text-[12.5px]">
               <span className="font-semibold text-ink">Project Key</span>
               <div className="flex gap-1.5">
-                <input type="text" readOnly value={creds.accessKey || "—"} className={`flex-1 ${inputClass}`} />
-                <button onClick={() => navigator.clipboard.writeText(creds.accessKey)} className={copyBtnClass}>Copy</button>
+                <input
+                  type="text"
+                  readOnly
+                  value={creds.accessKey || "—"}
+                  className={`flex-1 ${inputClass}`}
+                />
+                <button
+                  onClick={() => navigator.clipboard.writeText(creds.accessKey)}
+                  className={copyBtnClass}
+                >
+                  Copy
+                </button>
               </div>
             </label>
             <p className="text-[12.5px] text-ink-soft">
-              Stable — the same key across every export. Enter it, along with a password, at{" "}
-              <code className={codeClass}>/infrakit-access</code> on your deployed app.
+              Stable — the same key across every export. Enter it, along with a
+              password, at <code className={codeClass}>/infrakit-access</code>{" "}
+              on your deployed app.
             </p>
 
             <div className="my-2.5 h-px bg-border" />
@@ -102,32 +153,61 @@ export default function DashboardAccessModal({ projectId, onClose }) {
             {justReset ? (
               <>
                 <label className="flex flex-col gap-1.5 text-[12.5px]">
-                  <span className="font-semibold text-ink">New Password — shown once, copy it now</span>
+                  <span className="font-semibold text-ink">
+                    New Password — shown once, copy it now
+                  </span>
                   <div className="flex gap-1.5">
-                    <input type="text" readOnly value={justReset.password} className={`flex-1 ${inputClass}`} />
-                    <button onClick={() => navigator.clipboard.writeText(justReset.password)} className={copyBtnClass}>Copy</button>
+                    <input
+                      type="text"
+                      readOnly
+                      value={justReset.password}
+                      className={`flex-1 ${inputClass}`}
+                    />
+                    <button
+                      onClick={() =>
+                        navigator.clipboard.writeText(justReset.password)
+                      }
+                      className={copyBtnClass}
+                    >
+                      Copy
+                    </button>
                   </div>
                 </label>
                 <p className="text-[12.5px] text-ink-soft">
-                  This won't be shown again. Put it in your deployed app's <code className={codeClass}>.env</code> as{" "}
+                  This won't be shown again. Put it in your deployed app's{" "}
+                  <code className={codeClass}>.env</code> as{" "}
                   <code className={codeClass}>DASHBOARD_ACCESS_PASSWORD</code>.
                 </p>
               </>
             ) : (
               <p className="text-[12.5px] text-ink-soft">
-                Password: {creds.hasPassword ? `set (${creds.passwordCreatedAt})` : "never set"}. It's hashed —
-                even we can't show you the current one, only generate a new one.
+                Password:{" "}
+                {creds.hasPassword
+                  ? `set (${creds.passwordCreatedAt})`
+                  : "never set"}
+                . It's hashed — even we can't show you the current one, only
+                generate a new one.
               </p>
             )}
 
             {error && <p className="text-[13px] text-red-700">{error}</p>}
-            <button onClick={handleReset} disabled={loading} className="mt-1 rounded-[7px] bg-ink py-2.5 text-[13px] font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50">
-              {loading ? "Working…" : creds.hasPassword ? "Reset Password" : "Generate Password"}
+            <button
+              type="button"
+              onClick={handleReset}
+              disabled={loading}
+              className="mt-3 flex min-h-10 w-full border border-border shrink-0 items-center justify-center rounded-lg bg-ink px-4 py-2.5 text-[13px] hover:cursor-pointer font-semibold text-black transition-colors hover:opacity-90 hover:bg-[#333338] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {loading
+                ? "Working…"
+                : creds.hasPassword
+                  ? "Reset Password"
+                  : "Generate Password"}
             </button>
           </div>
         )}
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
 
