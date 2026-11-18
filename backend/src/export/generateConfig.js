@@ -15,7 +15,10 @@ function serializeValue(fieldType, raw) {
 function fieldsToObjectLiteral(pkgType, values) {
   const catalog = PACKAGE_CATALOG[pkgType];
   const lines = catalog.fields.map((f) => {
-    const raw = values && Object.prototype.hasOwnProperty.call(values, f.key) ? values[f.key] : f.default;
+    const raw =
+      values && Object.prototype.hasOwnProperty.call(values, f.key)
+        ? values[f.key]
+        : f.default;
     return `      ${f.key}: ${serializeValue(f.type, raw)},`;
   });
 
@@ -28,17 +31,21 @@ function fieldsToObjectLiteral(pkgType, values) {
       `      email: process.env.LB_ALERT_EMAIL ? {`,
       `        service: "gmail",`,
       `        auth: { user: process.env.LB_ALERT_EMAIL, pass: process.env.LB_ALERT_PASS },`,
-      `      } : undefined,`
+      `      } : undefined,`,
     );
   }
   if (pkgType === "dashboard") {
-    lines.push(`      username: process.env.DASHBOARD_USERNAME,`, `      password: process.env.DASHBOARD_PASSWORD,`);
+    lines.push(
+      `      username: process.env.DASHBOARD_USERNAME,`,
+      `      password: process.env.DASHBOARD_PASSWORD,`,
+      `      platformUrl: process.env.DASHBOARD_BASE_PATH,`,
+    );
   }
   if (pkgType === "health") {
     lines.push(
       `      // TODO: add checks by hand — createHttpCheck(...) returns a JS`,
       `      // function, which can't be expressed in this generated file.`,
-      `      checks: [],`
+      `      checks: [],`,
     );
   }
 
@@ -73,7 +80,9 @@ export function generateInfrakitConfig(nodes, dashboardEnabled) {
     if (!catalog || !catalog.configKey) continue; // shouldn't happen — core/unknown types are filtered before this is called
 
     if (instances.length === 1) {
-      blockLines.push(`  ${catalog.configKey}: ${fieldsToObjectLiteral(type, instances[0].values)},`);
+      blockLines.push(
+        `  ${catalog.configKey}: ${fieldsToObjectLiteral(type, instances[0].values)},`,
+      );
     } else {
       blockLines.push(
         `  // NOTE: ${instances.length} "${type}" nodes were placed on the canvas, nested here`,
@@ -84,9 +93,10 @@ export function generateInfrakitConfig(nodes, dashboardEnabled) {
         `  // a per-instance key.`,
         `  ${catalog.configKey}: {`,
         ...instances.map(
-          (inst, i) => `    ${JSON.stringify(inst.nickname?.trim() || `${type}_${i + 1}`)}: ${fieldsToObjectLiteral(type, inst.values)},`
+          (inst, i) =>
+            `    ${JSON.stringify(inst.nickname?.trim() || `${type}_${i + 1}`)}: ${fieldsToObjectLiteral(type, inst.values)},`,
         ),
-        `  },`
+        `  },`,
       );
     }
   }

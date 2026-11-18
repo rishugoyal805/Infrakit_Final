@@ -29,12 +29,7 @@ export const INFRAKIT_DISPLAY = {
   loadbalancer: { icon: "Network", category: "edge" },
 };
 
-export const DISABLED_INFRAKIT_PACKAGES = [
-  { id: "cache", label: "Cache", icon: "Database", category: "data" },
-  { id: "fn", label: "Fn", icon: "Zap", category: "compute" },
-  { id: "health", label: "Health", icon: "HeartPulse", category: "observability" },
-  { id: "logger", label: "Logger", icon: "FileText", category: "observability" },
-];
+export const DISABLED_INFRAKIT_PACKAGES = [];
 
 export const ARCH_COMPONENTS = [
   // ---- Client ----
